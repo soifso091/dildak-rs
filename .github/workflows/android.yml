@@ -28,22 +28,8 @@ jobs:
         echo "timestamp=$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_OUTPUT
         echo "run_number=$GITHUB_RUN_NUMBER" >> $GITHUB_OUTPUT
       
+    - name: Build Debug APK
+      run: ./gradlew assembleDebug
+
     - name: Build Release APK
       run: ./gradlew assembleRelease
-      
-    - name: Create Release
-      uses: softprops/action-gh-release@v1
-      with:
-        tag_name: build-${{ steps.vars.outputs.run_number }}-${{ steps.vars.outputs.sha_short }}
-        name: "Build #${{ steps.vars.outputs.run_number }} (${{ steps.vars.outputs.timestamp }})"
-        body: |
-          Automated build from commit ${{ steps.vars.outputs.sha_short }}
-          
-          - Timestamp: ${{ steps.vars.outputs.timestamp }}
-          - Run Number: #${{ steps.vars.outputs.run_number }}
-        draft: false
-        prerelease: false
-        files: |
-          android/build/outputs/apk/release/*.apk
-      env:
-        GITHUB_TOKEN: ${{ secrets.GGITHUB_TOKEN }}
