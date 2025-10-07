@@ -40,8 +40,8 @@ public class AkRifle extends Firearm {
             weapon.shootSound = Main.assets.m4shoot;
             weapon.mods.add("M4A1");
         } else {
-            weapon.spread *= 2f;
-            weapon.speedMod = 1.2f;
+            weapon.spread *= 0f;
+            weapon.speedMod = 9f;
             weapon.mods.add("AK");
         }
         for (WeaponMod mod: mods) {
@@ -60,7 +60,7 @@ public class AkRifle extends Firearm {
         new WeaponMod("Woodstock", 100f, true) {
             @Override
             void mod(Firearm weapon) {
-                weapon.knockback = 1.5f;
+                weapon.knockback = 0f;
                 Array<String> meshNames = ((AkRifle)weapon).meshNames;
                 meshNames.add(meshNames.get(0) + "-woodstock");
             }
@@ -68,7 +68,7 @@ public class AkRifle extends Firearm {
         new WeaponMod("NormalStock", 100f, true) {
             @Override
             void mod(Firearm weapon) {
-                weapon.knockback = 1f;
+                weapon.knockback = 0f;
                 Array<String> meshNames = ((AkRifle)weapon).meshNames;
                 meshNames.add(meshNames.get(0) + "-stock");
             }
@@ -81,9 +81,9 @@ public class AkRifle extends Firearm {
             void mod(Firearm weapon) {
                 weapon.name = "Extended " + weapon.name;
                 // Extended magazine but slower to reload.
-                weapon.maxAmmoInClip += 10;
-                weapon.ammoInClip += 10;
-                weapon.reloadSpeed *= .85f;
+                weapon.maxAmmoInClip += 10999;
+                weapon.ammoInClip += 10999;
+                weapon.reloadSpeed *= 2.3f;
                 ((AkRifle)weapon).magName = "ext-mag";
             }
         },
@@ -103,10 +103,10 @@ public class AkRifle extends Firearm {
             void mod(Firearm weapon) {
                 weapon.name = "Drum-Mag " + weapon.name;
                 // Extended magazine but slower to reload.
-                weapon.maxAmmoInClip = 90;
-                weapon.ammoInClip = 90;
-                weapon.reloadSpeed *= .4f;
-                weapon.clips = 2;
+                weapon.maxAmmoInClip = 990;
+                weapon.ammoInClip = 990;
+                weapon.reloadSpeed *= 9.4f;
+                weapon.clips = 6;
                 ((AkRifle)weapon).magName = "drum-mag";
             }
         },
@@ -117,22 +117,22 @@ public class AkRifle extends Firearm {
             @Override
             void mod(Firearm weapon) {
                 weapon.name = "Zippy " + weapon.name;
-                weapon.recoverySpeed *= 1.25f;  // Faster firing
+                weapon.recoverySpeed *= 9.9f;  // Faster firing
                 weapon.scaleZ *= .5f;  // Make the gun shorter
                 weapon.soundPitchBase = 1.125f;  // Higher frequency sound
-                weapon.spread *= 1.5f; // Less accurate
+                weapon.spread *= 0f; // Less accurate
             }
         },
         new WeaponMod("Chunky", 100f, false) {
             @Override
             void mod(Firearm weapon) {
                 weapon.name = "Chunky " + weapon.name;
-                weapon.damage *= 1.35f;  // Increase damage
+                weapon.damage *= 9.9f;  // Increase damage
                 weapon.scaleX *= 2f;  // Make the model thicker
                 weapon.soundPitchBase = 0.8f;  // Lower frequency sound
                 weapon.soundVolume = 1.2f; // Louder
-                weapon.recoverySpeed *= .85f; // A bit slower
-                weapon.knockForward *= 2.0f; // More knock back
+                weapon.recoverySpeed *= 9.9f; // A bit slower
+                weapon.knockForward *= 0.0f; // More knock back
                 // NOTE: Knockback is represented by negative values in knockForward
             }
         },

@@ -24,6 +24,28 @@ public class Pistol extends Firearm {
         mods.add("Pistol");
     }
 
+    // Enhanced constructor for creating maximized pistols
+    public Pistol(Player player, boolean maximized) {
+        super(player, Main.assets.pistolTemplate);
+        if (maximized) {
+            maximizeWeapon();
+            name = "Ultimate " + name;
+        } else {
+            ammoInClip = 7;
+            maxAmmoInClip = ammoInClip;
+            reloadSpeed = 2.0f;
+            recoveryTranslateZ = 0.125f;
+            recoveryRoll = 20f;
+            recoveryPitch = 30f;
+            recoverySpeed = 4.0f;
+            knockback = 2f;
+        }
+        name = "Pistol";
+        meshNames.add("pistol");
+        speedMod = 1.4f;
+        mods.add("Pistol");
+    }
+
     static final float[] MOD_COUNT_WEIGHTS = new float[] {2f, 33f, 65f};
     public static Pistol generateRandom(Roller roller) {
         Array<WeaponMod> mods = new Array<>();
@@ -35,6 +57,15 @@ public class Pistol extends Firearm {
             mods.add(roller.getRandomMod(weaponMods, mods));
         }
         return generateFrom(mods);
+    }
+
+    // New method to generate maximized pistol
+    public static Pistol generateMaximized() {
+        Pistol pistol = new Pistol(null);
+        pistol.maximizeWeapon();
+        pistol.name = "Ultimate Pistol";
+        pistol.updateModel();
+        return pistol;
     }
 
     public static Pistol generateFrom(Array<WeaponMod> mods) {
@@ -79,6 +110,18 @@ public class Pistol extends Firearm {
                 weapon.ammoInClip = 30;
                 weapon.reloadSpeed *= .5f;
                 weapon.clips = 2;
+                ((Pistol)weapon).meshNames.add("pistol-drum-mag");
+            }
+        },
+        // NEW: Ultimate Magazine mod
+        new WeaponMod("InfiniteMag", 100f, true) {
+            @Override
+            void mod(Firearm weapon) {
+                weapon.name = "Infinite " + weapon.name;
+                weapon.maxAmmoInClip = MAX_AMMO_IN_CLIP;
+                weapon.ammoInClip = MAX_AMMO_IN_CLIP;
+                weapon.clips = MAX_CLIPS;
+                weapon.reloadSpeed = MAX_RELOAD_SPEED;
                 ((Pistol)weapon).meshNames.add("pistol-drum-mag");
             }
         },
@@ -160,5 +203,138 @@ public class Pistol extends Firearm {
                 ((Pistol)weapon).meshNames.add("pistol-scope");
             }
         },
+        // NEW: Ultimate mods for maximum performance
+        new WeaponMod("LaserAccuracy", 100f, false) {
+            @Override
+            void mod(Firearm weapon) {
+                weapon.name = "Laser " + weapon.name;
+                weapon.spread = MIN_SPREAD;
+                weapon.recoveryRoll = MIN_RECOIL_ROLL;
+                weapon.recoveryPitch = MIN_RECOIL_PITCH;
+                weapon.recoveryTranslateZ = MIN_RECOIL_TRANSLATE_Z;
+                ((Pistol)weapon).meshNames.add("pistol-laser");
+            }
+        },
+        new WeaponMod("RapidFire", 100f, false) {
+            @Override
+            void mod(Firearm weapon) {
+                weapon.name = "Rapid-Fire " + weapon.name;
+                weapon.recoverySpeed = MAX_FIRING_SPEED;
+                weapon.reloadSpeed = MAX_RELOAD_SPEED;
+                weapon.isAuto = true;
+                weapon.noAutoWaitTime = 0f;
+                weapon.soundPitchBase = 1.5f;
+            }
+        },
+        new WeaponMod("DamageMax", 100f, false) {
+            @Override
+            void mod(Firearm weapon) {
+                weapon.name = "Devastator " + weapon.name;
+                weapon.damage = MAX_DAMAGE;
+                weapon.bulletsPerShot = Math.min(MAX_BULLETS_PER_SHOT, 10); // Reasonable for pistol
+                weapon.knockForward *= 3.0f;
+                weapon.knockback = MIN_KNOCKBACK; // Less screen shake for better aim
+            }
+        },
+        new WeaponMod("Ultimate", 100f, true) {
+            @Override
+            void mod(Firearm weapon) {
+                weapon.name = "Ultimate " + weapon.name;
+                // Apply all maximum values
+                weapon.maximizeWeapon();
+                // Additional visual customization
+                ((Pistol)weapon).meshNames.add("pistol-ultimate");
+                ((Pistol)weapon).meshNames.add("pistol-scope");
+                ((Pistol)weapon).meshNames.add("pistol-laser");
+            }
+        },
+        // NEW: Hybrid mods
+        new WeaponMod("BalancedPerf", 100f, false) {
+            @Override
+            void mod(Firearm weapon) {
+                weapon.name = "Balanced " + weapon.name;
+                weapon.damage = MAX_DAMAGE * 0.7f;
+                weapon.recoverySpeed = MAX_FIRING_SPEED * 0.8f;
+                weapon.spread = MIN_SPREAD * 2f;
+                weapon.maxAmmoInClip = MAX_AMMO_IN_CLIP;
+                weapon.reloadSpeed = MAX_RELOAD_SPEED * 0.9f;
+                weapon.knockback = MIN_KNOCKBACK;
+            }
+        },
+        new WeaponMod("Stealth", 100f, false) {
+            @Override
+            void mod(Firearm weapon) {
+                weapon.name = "Silenced " + weapon.name;
+                weapon.soundVolume = 0.2f;
+                weapon.spread = MIN_SPREAD;
+                weapon.knockback = MIN_KNOCKBACK * 0.5f;
+                weapon.knockForward *= 0.3f;
+                ((Pistol)weapon).meshNames.add("pistol-silencer");
+            }
+        },
     };
+
+    // Override maximizeWeapon to include pistol-specific enhancements
+    @Override
+    public void maximizeWeapon() {
+        super.maximizeWeapon();
+        // Pistol-specific maximizations
+        this.speedMod = 2.0f; // Even faster movement with pistol
+        this.aimSightFov = 25f; // Better zoom for pistol
+        this.aimSightY = -.25f;
+        this.aimSightZ = -.4f;
+        
+        // Ensure reasonable values for pistol (not making it too OP in certain aspects)
+        this.bulletsPerShot = Math.min(MAX_BULLETS_PER_SHOT, 5); // Pistol shouldn't be a shotgun
+        this.knockback = MIN_KNOCKBACK * 0.5f; // Less screen shake for precision
+        
+        // Update model to show ultimate appearance
+        this.meshNames.clear();
+        this.meshNames.add("pistol");
+        this.meshNames.add("pistol-ultimate");
+        this.meshNames.add("pistol-scope");
+        this.meshNames.add("pistol-laser");
+        updateModel();
+    }
+
+    // New method to create specific types of maximized pistols
+    public static Pistol createSniperPistol(Player player) {
+        Pistol pistol = new Pistol(player);
+        pistol.setMinimumSpread();
+        pistol.damage = MAX_DAMAGE;
+        pistol.aimSightFov = 20f;
+        pistol.aimSightY = -.2f;
+        pistol.aimSightZ = -.3f;
+        pistol.recoverySpeed = 8.0f; // Slower but precise
+        pistol.name = "Sniper Pistol";
+        pistol.meshNames.add("pistol-scope");
+        pistol.meshNames.add("pistol-long-barrel");
+        pistol.updateModel();
+        return pistol;
+    }
+
+    public static Pistol createMachinePistol(Player player) {
+        Pistol pistol = new Pistol(player);
+        pistol.setMaximumFiringSpeed();
+        pistol.setMaximumAmmo();
+        pistol.isAuto = true;
+        pistol.burstCount = 1;
+        pistol.spread = MIN_SPREAD * 3f; // Slight spread for full auto
+        pistol.name = "Machine Pistol";
+        pistol.meshNames.add("pistol-drum-mag");
+        pistol.updateModel();
+        return pistol;
+    }
+
+    public static Pistol createStealthPistol(Player player) {
+        Pistol pistol = new Pistol(player);
+        pistol.setMinimumSpread();
+        pistol.setMinimumRecoil();
+        pistol.soundVolume = 0.1f;
+        pistol.knockForward *= 0.2f;
+        pistol.name = "Stealth Pistol";
+        pistol.meshNames.add("pistol-silencer");
+        pistol.updateModel();
+        return pistol;
+    }
 }

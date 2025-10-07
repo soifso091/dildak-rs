@@ -45,6 +45,22 @@ public class Firearm extends PlayerWeapon {
     public float totalBulletsHit = 0;
     public float totalDamage = 0f;
 
+    // Maximum values for weapon attributes
+    public static final float MAX_DAMAGE = 100.0f;
+    public static final float MIN_SPREAD = 0.001f; // Near-perfect accuracy
+    public static final int MAX_AMMO_IN_CLIP = 500;
+    public static final int MAX_CLIPS = 999;
+    public static final float MAX_FIRING_SPEED = 20.0f; // Very fast recovery
+    public static final float MAX_RELOAD_SPEED = 5.0f; // Very fast reload
+    public static final int MAX_BULLETS_PER_SHOT = 50; // Shotgun-like spread
+    public static final int MAX_BURST_COUNT = 10;
+    
+    // Minimum recoil values
+    public static final float MIN_RECOIL_TRANSLATE_Z = 0.01f;
+    public static final float MIN_RECOIL_ROLL = 1.0f;
+    public static final float MIN_RECOIL_PITCH = 1.0f;
+    public static final float MIN_KNOCKBACK = 0.1f;
+
     public static class Template {
         public final ModelInstance model;
         /**
@@ -71,6 +87,13 @@ public class Firearm extends PlayerWeapon {
         this.muzzlePoint = template.muzzlePoint;
         this.shootSound = template.shootSound;
         this.reloadSound = template.reloadSound;
+        
+        // Apply minimum spread and recoil by default
+        this.spread = MIN_SPREAD;
+        this.recoveryTranslateZ = MIN_RECOIL_TRANSLATE_Z;
+        this.recoveryRoll = MIN_RECOIL_ROLL;
+        this.recoveryPitch = MIN_RECOIL_PITCH;
+        this.knockback = MIN_KNOCKBACK;
     }
 
     public float soundPitchBase = 1.0f;
@@ -96,7 +119,7 @@ public class Firearm extends PlayerWeapon {
     public float noAutoWaitTime = 0f;
     public float noAutoTimer = 0f;
     public int bulletsPerShot = 1;
-    public float spread = 0.02f;
+    public float spread = MIN_SPREAD; // Start with minimum spread
     @Override
     public void update(float delta) {
         if (state == State.Ready) {
@@ -172,7 +195,7 @@ public class Firearm extends PlayerWeapon {
             }
         }
         totalBulletsShot += bulletsPerShot;
-        // Knockback
+        // Knockback (using minimized values)
         float horizontalLength = knockForward;
         player.hitBox.velocity.add(
             player.camera.direction.x * horizontalLength,
@@ -194,9 +217,9 @@ public class Firearm extends PlayerWeapon {
         }
     }
 
-    public float recoveryTranslateZ = 0.125f;
-    public float recoveryRoll = 20f;
-    public float recoveryPitch = 10f;
+    public float recoveryTranslateZ = MIN_RECOIL_TRANSLATE_Z;
+    public float recoveryRoll = MIN_RECOIL_ROLL;
+    public float recoveryPitch = MIN_RECOIL_PITCH;
     public float recoverySpeed = 8.0f;
 
     public float reloadSpeed = 1.0f;
@@ -289,5 +312,66 @@ public class Firearm extends PlayerWeapon {
         for (String s: mods) builder.append(s).append(' ');
         builder.deleteCharAt(builder.length()-1);
         return builder.toString();
+    }
+    
+    // New methods to maximize weapon attributes
+    public void maximizeWeapon() {
+        this.damage = MAX_DAMAGE;
+        this.spread = MIN_SPREAD;
+        this.maxAmmoInClip = MAX_AMMO_IN_CLIP;
+        this.clips = MAX_CLIPS;
+        this.ammoInClip = MAX_AMMO_IN_CLIP;
+        this.recoverySpeed = MAX_FIRING_SPEED;
+        this.reloadSpeed = MAX_RELOAD_SPEED;
+        this.bulletsPerShot = MAX_BULLETS_PER_SHOT;
+        this.burstCount = MAX_BURST_COUNT;
+        this.recoveryTranslateZ = MIN_RECOIL_TRANSLATE_Z;
+        this.recoveryRoll = MIN_RECOIL_ROLL;
+        this.recoveryPitch = MIN_RECOIL_PITCH;
+        this.knockback = MIN_KNOCKBACK;
+        this.isAuto = true;
+        this.noAutoWaitTime = 0f;
+    }
+    
+    /**
+     * Set minimum spread for perfect accuracy
+     */
+    public void setMinimumSpread() {
+        this.spread = MIN_SPREAD;
+    }
+    
+    /**
+     * Set minimum recoil for stable shooting
+     */
+    public void setMinimumRecoil() {
+        this.recoveryTranslateZ = MIN_RECOIL_TRANSLATE_Z;
+        this.recoveryRoll = MIN_RECOIL_ROLL;
+        this.recoveryPitch = MIN_RECOIL_PITCH;
+        this.knockback = MIN_KNOCKBACK;
+    }
+    
+    /**
+     * Set maximum ammo capacity
+     */
+    public void setMaximumAmmo() {
+        this.maxAmmoInClip = MAX_AMMO_IN_CLIP;
+        this.clips = MAX_CLIPS;
+        this.ammoInClip = MAX_AMMO_IN_CLIP;
+    }
+    
+    /**
+     * Set maximum firing speed
+     */
+    public void setMaximumFiringSpeed() {
+        this.recoverySpeed = MAX_FIRING_SPEED;
+        this.isAuto = true;
+        this.noAutoWaitTime = 0f;
+    }
+    
+    /**
+     * Set maximum reload speed
+     */
+    public void setMaximumReloadSpeed() {
+        this.reloadSpeed = MAX_RELOAD_SPEED;
     }
 }
