@@ -22,10 +22,10 @@ jobs:
       run: chmod +x ./gradlew
       
     - name: Build Debug APK with info
-      run: ./gradlew assembleDebug --info
+      run: ./gradlew assembleDebug
       
     - name: Build Release APK with info
-      run: ./gradlew assembleRelease --info
+      run: ./gradlew assembleRelease
 
     - name: Upload APK artifacts
       uses: actions/upload-artifact@v4
