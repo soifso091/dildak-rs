@@ -398,6 +398,6 @@ public class Player extends GameEntity {
     @Override
     public boolean takeDamage(float amount, DamageAgent agent, DamageSource source) {
         world.screen.playerHurt();
-        return super.takeDamage(amount, agent, source);
+        return;
     }
 }
